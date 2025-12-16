@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { fetchCurrentUser, logout, setUser } from "../store/session.jsx";
 
 const API_URL = import.meta.env.VITE_API_URL;
-
 export default function Home() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
