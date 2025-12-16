@@ -1,0 +1,119 @@
+.image {
+    background-image: url("./bank-teller.webp");
+    max-width: 1280px;
+    height: 100dvh;
+    background-size: cover;
+    background-repeat: no-repeat;
+    box-shadow: inset 5px 5px 5px 20px hsla(0, 0%, 75%, 0.466);
+    flex: 1;
+
+
+}
+
+.options-List {
+    display: flex;
+    width: 100%;
+    flex: 1;
+    justify-content: space-around;
+    list-style-type: none;
+    align-items: stretch;
+    font-style: bold;
+
+
+
+
+
+
+}
+
+.buisness {
+    width: 5rem;
+    border-left: 2px solid black;
+
+}
+
+.buisness:hover {
+    background-color: coral;
+    cursor: pointer;
+
+}
+
+
+.credit {
+    width: 5rem;
+    border-left: 2px solid black;
+}
+.credit:hover {
+    background-color: coral;
+    cursor: pointer;
+
+}
+
+
+.checking {
+    width: 5rem;
+    border-left: 2px solid black;
+}
+.checking:hover {
+    background-color: coral;
+    cursor: pointer;
+
+}
+
+
+.travel {
+    width: 5rem;
+    border-left: 2px solid black;
+}
+.travel:hover {
+    background-color: coral;
+    cursor: pointer;
+
+}
+
+
+.saving {
+    width: 5rem;
+    border-left: 2px solid black;
+}
+.saving:hover {
+    background-color: coral;
+    cursor: pointer;
+
+}
+
+
+.loans {
+    width: 5rem;
+    border-left: 2px solid black;
+}
+.loans:hover {
+    background-color: coral;
+    cursor: pointer;
+
+}
+
+
+.sign-up {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    filter: blur();
+    color: rgb(0, 0, 0);
+    background-color: rgba(240, 248, 255, 0.37);
+    width: 300px;
+    height: 200px;
+    flex-wrap: wrap;
+    margin-left: 500px;
+    padding-top: 100px;
+
+}
+
+
+@media (min-width: 300px) {
+    #root{
+        
+    }
+
+}

@@ -1,0 +1,19 @@
+.footer{
+    position: static;
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: space-around;
+    align-items: flex-start;
+    background-color: hsla(0, 0%, 72%, 0.226);
+    color: rgb(218, 236, 252);
+
+
+}
+
+.support{
+    list-style: none;
+
+}
