@@ -1,11 +1,16 @@
 import React, { useState } from "react";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { fetchCurrentUser, logout, setUser } from "../store/session.jsx";
+import {
+  fetchCurrentUser,
+  setUser,
+  logout,
+} from "../store/session";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 const API_URL = import.meta.env.VITE_API_URL;
+
 export default function Home() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -13,59 +18,79 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleClick = async (e) => {
+  // --------------------------------------------------------------
+  // Helper – safe JSON fetch (avoids “Unexpected token '<'” errors)
+  // --------------------------------------------------------------
+  const safeJsonFetch = async (url: string, opts: RequestInit) => {
+    const resp = await fetch(url, opts);
+    const text = await resp.text();
+
+    // If the server sent HTML (most likely a 500 page) we abort early
+    if (text.trim().startsWith("<")) {
+      const err = new Error("Server returned an HTML error page");
+      // Attach the raw text for debugging
+      (err as any).body = text;
+      throw err;
+    }
+
+    // If the response isn’t ok, try to extract a JSON error object
+    if (!resp.ok) {
+      const errJson = JSON.parse(text);
+      const errMsg = errJson.error || "Login failed";
+      const errObj = new Error(errMsg) as any;
+      errObj.status = resp.status;
+      errObj.body = text;
+      throw errObj;
+    }
+
+    // Otherwise we have a valid JSON payload
+    return resp.json();
+  };
+
+  // --------------------------------------------------------------
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const res = await fetch(`${API_URL}/auth/login`, {
+      const data = await safeJsonFetch(`${API_URL}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username: email, // backend expects username
-          password: password,
+          username: email, // backend expects the key `username`
+          password,
         }),
       });
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        alert(data.error || "Login failed");
-        return;
-      }
-
-      // 1. Save token
+      // ---- SUCCESS ------------------------------------------------
+      // 1️⃣ Save the access token
       localStorage.setItem("access_token", data.access_token);
 
-      // 2. Fetch user using Redux
-      dispatch(setUser(data.user)); // works now
-      navigate("/user");
+      // 2️⃣ Store the user in Redux (or any global state you use)
+      dispatch(setUser(data.user));
 
-      // 3. Redirect to /user page
+      // 3️⃣ Navigate to the protected area
       navigate("/user");
-    } catch (err) {
-      console.error(err);
-      alert("Server error");
+    } catch (err: any) {
+      // ---- FAILURE ------------------------------------------------
+      console.error("Login error:", err);
+      const msg = err.body || err.message || "Login failed";
+      alert(msg);
     }
   };
 
+  // --------------------------------------------------------------
   return (
     <>
-      <ul className="options-List">
-        <li className="buisness">Buisness</li>
-        <li className="credit">Credit Cards</li>
-        <li className="checking">Checking</li>
-        <li className="travel">Travel</li>
-        <li className="saving">Savings</li>
-        <li className="loans">Home Loans</li>
-      </ul>
+      {/* …your nav‑list etc… */}
       <div className="image">
-        <form className="sign-up">
+        <form className="sign-up" onSubmit={handleLogin}>
           Welcome
           <TextField
             required
             id="email"
             label="Email"
             variant="standard"
+            autoComplete="username"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -75,13 +100,14 @@ export default function Home() {
             label="Password"
             type="password"
             variant="standard"
+            autoComplete="current-password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
           <Button
-            onClick={handleClick}
-            style={{ marginTop: "20px", backgroundColor: "deeporange[700]" }}
+            type="submit"
             variant="contained"
+            sx={{ mt: 2, backgroundColor: "deeporange[700]" }}
           >
             Sign in
           </Button>
